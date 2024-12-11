@@ -9,6 +9,8 @@ typedef struct {
   int R;
   int C;
   int N;
+
+  char *map;
 } Ecosystem;
 
 #endif // STRUCTS_H
