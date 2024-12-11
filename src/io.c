@@ -78,3 +78,21 @@ char *load_map(FILE *file, int rows, int cols) {
 
   return map;
 }
+
+void output(Ecosystem ecosystem) {
+  char here;
+
+  for (int i = 0; i < ecosystem.R; ++i) {
+    for (int j = 0; j < ecosystem.C; ++j) {
+      here = ecosystem.map[i * ecosystem.C + j];
+      if (here == ' ')
+        continue;
+      else if (here == '*')
+        printf("ROCK %d %d\n", i, j);
+      else if (here == 'F')
+        printf("FOX %d %d\n", i, j);
+      else if (here == 'R')
+        printf("RABBIT %d %d\n", i, j);
+    }
+  }
+}
