@@ -7,6 +7,8 @@ int main(int argc, char *argv[]) {
   }
 
   Ecosystem state = load_from_file(argv[1]);
+  // move through generations until state.N_GEN
+  // move rabbits first
   show_ecosystem(state);
   output(state);
   return 0;

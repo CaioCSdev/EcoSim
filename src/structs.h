@@ -15,4 +15,17 @@ typedef struct {
   int GEN_COUNT;
 } Ecosystem;
 
+typedef struct {
+  int age;
+  int since_last_procreation;
+  int x;
+  int y;
+} Rabbit;
+
+typedef struct {
+  int age;
+  int x;
+  int y;
+} Fox;
+
 #endif // STRUCTS_H
