@@ -11,6 +11,8 @@ typedef struct {
   int N;
 
   char *map;
+
+  int GEN_COUNT;
 } Ecosystem;
 
 #endif // STRUCTS_H
