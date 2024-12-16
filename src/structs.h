@@ -1,6 +1,20 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#define RABBIT 'R'
+#define FOX 'F'
+#define ROCK '*'
+#define EMPTY ' '
+
+typedef struct {
+  int age;
+  short since_last_procreation;
+  short since_last_meal;
+  char species;
+  int row;
+  int col;
+} Animal;
+
 typedef struct {
   int GEN_PROC_RABBITS;
   int GEN_PROC_FOXES;
@@ -16,16 +30,13 @@ typedef struct {
 } Ecosystem;
 
 typedef struct {
-  int age;
-  int since_last_procreation;
-  int x;
-  int y;
-} Rabbit;
+  int num_rabbits;
+  int num_foxes;
 
-typedef struct {
-  int age;
-  int x;
-  int y;
-} Fox;
+  Animal **population;
+
+  Animal **rabbits;
+  Animal **foxes;
+} World;
 
 #endif // STRUCTS_H

@@ -23,13 +23,13 @@ void show_map(int rows, int cols, char *map) {
 }
 
 void show_ecosystem(Ecosystem ecosystem) {
-  printf("GEN_PROC_RABBITS: %d\n", ecosystem.GEN_PROC_RABBITS);
-  printf("GEN_PROC_FOXES: %d\n", ecosystem.GEN_PROC_FOXES);
-  printf("GEN_FOOD_FOXES: %d\n", ecosystem.GEN_FOOD_FOXES);
-  printf("N_GEN: %d\n", ecosystem.N_GEN);
-  printf("R: %d\n", ecosystem.R);
-  printf("C: %d\n", ecosystem.C);
-  printf("N: %d\n", ecosystem.N);
+  // printf("GEN_PROC_RABBITS: %d\n", ecosystem.GEN_PROC_RABBITS);
+  // printf("GEN_PROC_FOXES: %d\n", ecosystem.GEN_PROC_FOXES);
+  // printf("GEN_FOOD_FOXES: %d\n", ecosystem.GEN_FOOD_FOXES);
+  // printf("N_GEN: %d\n", ecosystem.N_GEN);
+  // printf("R: %d\n", ecosystem.R);
+  // printf("C: %d\n", ecosystem.C);
+  // printf("N: %d\n", ecosystem.N);
   show_map(ecosystem.R, ecosystem.C, ecosystem.map);
 }
 
@@ -42,6 +42,7 @@ Ecosystem load_from_file(char *filename) {
   }
 
   Ecosystem state;
+  state.GEN_COUNT = 0;
   fscanf(file, "%d", &state.GEN_PROC_RABBITS);
   fscanf(file, "%d", &state.GEN_PROC_FOXES);
   fscanf(file, "%d", &state.GEN_FOOD_FOXES);
