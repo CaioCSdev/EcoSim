@@ -43,10 +43,10 @@ Ecosystem duplicate_state(Ecosystem state) {
 }
 
 int main(int argc, char *argv[]) {
-  int i;
+  int i, n, j;
   int *position;
   char direction;
-  Animal *rabbit;
+  Animal *animal;
   if (argc != 2) {
     printf("Usage: %s <filename>\n", argv[0]);
     return 1;
@@ -56,21 +56,44 @@ int main(int argc, char *argv[]) {
   Ecosystem next_gen_state = duplicate_state(state);
   World world = populate_world(state);
   omp_lock_t *locks = create_locks(state);
+  for (j = 0; j < state.N_GEN; j++) {
+    show_ecosystem(state);
+    n = world.num_rabbits;
+#pragma omp parallel for private(position, i, direction, animal)
+    for (i = 0; i < n; i++) {
+      position = malloc(sizeof(int) * 2);
+      animal = world.rabbits[i];
+#pragma omp critical
+      direction = rabbit_move(animal->row, animal->col, state);
+      new_position(animal->row, animal->col, direction, position);
+      set_lock(locks, position, state);
+      // start critical section
+      move_to(animal, position, &next_gen_state, &world);
+      update_animal(animal);
+      // end critical section
+      unset_lock(locks, position, state);
+      free(position);
+    }
 
-#pragma omp parallel for private(position, i, direction, rabbit)
-  for (i = 0; i < world.num_rabbits; i++) {
-    position = malloc(sizeof(int) * 2);
-    rabbit = world.rabbits[i];
-    direction = rabbit_move(rabbit->row, rabbit->col, state);
-    new_position(rabbit->row, rabbit->col, direction, position);
-    set_lock(locks, position, state);
-    // start critical section
-    move_to(rabbit, position, &next_gen_state, &world);
-    update_animal(rabbit);
-    // end critical section
-    unset_lock(locks, position, state);
+    n = world.num_foxes;
+#pragma omp parallel for private(position, i, direction, animal)
+    for (i = 0; i < n; i++) {
+      position = malloc(sizeof(int) * 2);
+      animal = world.foxes[i];
+      direction = fox_move(animal->row, animal->col, state);
+#pragma omp critical
+      new_position(animal->row, animal->col, direction, position);
+      set_lock(locks, position, state);
+      // start critical section
+      move_to(animal, position, &next_gen_state, &world);
+      update_animal(animal);
+      // end critical section
+      unset_lock(locks, position, state);
+      free(position);
+    }
+    memcpy(state.map, next_gen_state.map, sizeof(char) * state.R * state.C);
+    state.GEN_COUNT++;
+    next_gen_state.GEN_COUNT++;
   }
-  show_ecosystem(state);
-  show_ecosystem(next_gen_state);
   return 0;
 }

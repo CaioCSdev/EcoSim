@@ -10,6 +10,9 @@ int no_rock_at(int position[], Ecosystem state) {
 int no_rabbit_at(int position[], Ecosystem state) {
   return (state.map[position[ROW] * state.C + position[COL]] != 'R');
 }
+int no_fox_at(int position[], Ecosystem state) {
+  return (state.map[position[ROW] * state.C + position[COL]] != 'F');
+}
 
 int in_bounds(int position[], Ecosystem state) {
   return ((position[ROW] >= 0) && (position[ROW] < state.R) &&
@@ -21,7 +24,7 @@ int is_valid_move(int x, int y, Ecosystem state, int only_empty) {
   if (!only_empty)
     return (in_bounds(position, state) && no_rock_at(position, state));
   return (in_bounds(position, state) && no_rock_at(position, state) &&
-          no_rabbit_at(position, state));
+          no_rabbit_at(position, state) && no_fox_at(position, state));
 }
 
 void new_position(int x, int y, char direction, int *position) {
@@ -120,8 +123,9 @@ char fox_move(int x, int y, Ecosystem state) {
 
   int rabbit_nearby = 0;
   for (int i = 0; i < 4; ++i) {
-    if (in_bounds(rabbit_possible_positions[i], state) &&
-        no_rabbit_at(rabbit_possible_positions[i], state)) {
+    if (!in_bounds(rabbit_possible_positions[i], state)) {
+      tmp_micro_state.map[positions[i]] = '*';
+    } else if (no_rabbit_at(rabbit_possible_positions[i], state)) {
       tmp_micro_state.map[positions[i]] = '*';
     } else {
       tmp_micro_state.map[positions[i]] = 'R';
@@ -132,5 +136,5 @@ char fox_move(int x, int y, Ecosystem state) {
   if (rabbit_nearby)
     return move(1, 1, tmp_micro_state, 0);
   else
-    return move(x, y, state, 0);
+    return move(x, y, state, 1);
 }

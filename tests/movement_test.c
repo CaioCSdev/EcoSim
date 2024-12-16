@@ -30,6 +30,13 @@ void test_at_grid_higher_boundaries() {
   printf("OK\n");
 }
 
+void test_at_grid_higher_boundaries_top_right() {
+  printf("test_at_grid_boundaries ... ");
+  char result = move(0, 2, state);
+  assert(result == 'S');
+  printf("OK\n");
+}
+
 // Test the move function when all possible directions are blocked.
 void test_all_directions_outbounds() {
   printf("test_all_directions_outbounds ... ");
@@ -192,6 +199,7 @@ int main() {
   test_surrounded_by_rocks();
   test_at_grid_lower_boundaries();
   test_at_grid_higher_boundaries();
+  test_at_grid_higher_boundaries_top_right();
   test_all_directions_outbounds();
   test_one_direction_possible_north();
   test_one_direction_possible_east();
