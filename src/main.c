@@ -44,7 +44,9 @@ Ecosystem duplicate_state(Ecosystem state) {
 
 int main(int argc, char *argv[]) {
   int i;
-  int *position = malloc(sizeof(int) * 2);
+  int *position;
+  char direction;
+  Animal *rabbit;
   if (argc != 2) {
     printf("Usage: %s <filename>\n", argv[0]);
     return 1;
@@ -55,23 +57,20 @@ int main(int argc, char *argv[]) {
   World world = populate_world(state);
   omp_lock_t *locks = create_locks(state);
 
-  // #pragma omp parallel if (0) num_threads(1)
-  {
-    for (i = 0; i < world.num_rabbits; i++) {
-      Animal *rabbit = world.rabbits[i];
-      char direction = rabbit_move(rabbit->row, rabbit->col, state);
-      new_position(rabbit->row, rabbit->col, direction, position);
-      // set_lock(locks, position, state);
-      // start critical section
-      printf("moving %c from (%d,%d) to (%d,%d)\n", rabbit->species,
-             rabbit->row, rabbit->col, position[0], position[1]);
-      move_to(rabbit, position, &next_gen_state, &world);
-      update_animal(rabbit);
-      // end critical section
-      // unset_lock(locks, position, state);
-    }
-    show_ecosystem(state);
-    show_ecosystem(next_gen_state);
+#pragma omp parallel for private(position, i, direction, rabbit)
+  for (i = 0; i < world.num_rabbits; i++) {
+    position = malloc(sizeof(int) * 2);
+    rabbit = world.rabbits[i];
+    direction = rabbit_move(rabbit->row, rabbit->col, state);
+    new_position(rabbit->row, rabbit->col, direction, position);
+    set_lock(locks, position, state);
+    // start critical section
+    move_to(rabbit, position, &next_gen_state, &world);
+    update_animal(rabbit);
+    // end critical section
+    unset_lock(locks, position, state);
   }
+  show_ecosystem(state);
+  show_ecosystem(next_gen_state);
   return 0;
 }
